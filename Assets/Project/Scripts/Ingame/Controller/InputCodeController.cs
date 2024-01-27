@@ -8,45 +8,33 @@ using UnityEngine.Events;
 
 namespace GGJ.Ingame.Controller
 {
-    public interface IInputCodeEvent
+    public class InputCodeController : MonoBehaviour 
     {
-        UnityAction OnTypeSuccessEvent();
-        UnityAction OnTypeFailEvent();
-        UnityAction OnTypeCompleteEvent();
-    }
-
-    public class InputCodeController : MonoBehaviour, IInputCodeEvent
-    {
+        [SerializeField] private AudioSetting _audioSetting;
         private string _nextArrangeCode;
         private int _nextCodeIndex;
 
         private IInputCodeSystem _inputCodeSystem;
         private IInputCodePanel _inputCodePanel;
-
-        private UnityAction _onTypeSuccessEvent;
-        private UnityAction _onTypeFailEvent;
-        private UnityAction _onTypeCompleteEvent;
-
-        public UnityAction OnTypeSuccessEvent() => _onTypeSuccessEvent;
-        public UnityAction OnTypeFailEvent() => _onTypeFailEvent;
-        public UnityAction OnTypeCompleteEvent() => _onTypeCompleteEvent;
-
-
+        private AudioSource _audioSource;
 
         private void Start ()
         {
             Initialize(
                 FindFirstObjectByType<InputCodeSystem>(),
-                FindFirstObjectByType<InputCodePanel>());
+                FindFirstObjectByType<InputCodePanel>(),
+                GetComponent<AudioSource>());
         }
 
-        public void Initialize(IInputCodeSystem inputCodeSystem, IInputCodePanel inputCodePanel)
+        public void Initialize(IInputCodeSystem inputCodeSystem, IInputCodePanel inputCodePanel, AudioSource audioSource)
         {
             _inputCodeSystem = inputCodeSystem;
             _inputCodePanel = inputCodePanel;
+            _audioSource = audioSource;
 
             Assert.IsNotNull(_inputCodeSystem);
             Assert.IsNotNull(_inputCodePanel);
+            Assert.IsNotNull(_audioSource);
 
             _nextArrangeCode = GenerateTestCode();
             //Debug.Log($"Next code: {_nextArrangeCode}");
@@ -66,14 +54,14 @@ namespace GGJ.Ingame.Controller
             if (inputCode.HasValue && _nextArrangeCode[_nextCodeIndex] == inputCode)
             {
                 _inputCodePanel.SetCompletedIndex(_nextCodeIndex);
-                _onTypeSuccessEvent?.Invoke();
+                _audioSource.PlayOneShot(_audioSetting.SuccessClip);
                 _nextCodeIndex++;
 
                 var isCompleted = CheckInputComplete(_nextCodeIndex, _nextArrangeCode);
                 if (isCompleted)
                 {
                     CompleteCode();
-                    _onTypeCompleteEvent?.Invoke();
+                    _audioSource.PlayOneShot(_audioSetting.CompleteClip);
                     return;
                 }
                 return;
@@ -82,7 +70,7 @@ namespace GGJ.Ingame.Controller
 
             if (inputCode.HasValue)
             {
-                _onTypeFailEvent?.Invoke();
+                _audioSource.PlayOneShot(_audioSetting.FailClip);
             }
         }
 
@@ -113,5 +101,13 @@ namespace GGJ.Ingame.Controller
             };
             return simpleCodes[Random.Range(0, simpleCodes.Length)];
         }
+
+        [System.Serializable]
+        public struct AudioSetting
+        {
+            public AudioClip SuccessClip;
+            public AudioClip FailClip;
+            public AudioClip CompleteClip;
+        } 
     }
 }
