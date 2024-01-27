@@ -55,7 +55,7 @@ namespace GGJ.Ingame.Controller
                 {
                     CompleteCode();
                     //жие\
-
+                    PlayerStat.i.AddWallPoint("Wall_1",1000);
                     return;
                 }
                 //Debug.Log($"Next type code: {_nextArrangeCode[_nextCodeIndex]}");
