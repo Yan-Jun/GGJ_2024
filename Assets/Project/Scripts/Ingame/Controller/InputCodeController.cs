@@ -54,6 +54,8 @@ namespace GGJ.Ingame.Controller
                 if (isCompleted)
                 {
                     CompleteCode();
+                    //жие\
+
                     return;
                 }
                 //Debug.Log($"Next type code: {_nextArrangeCode[_nextCodeIndex]}");
