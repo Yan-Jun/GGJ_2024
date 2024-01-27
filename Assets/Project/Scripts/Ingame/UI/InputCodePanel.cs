@@ -109,6 +109,7 @@ namespace GGJ.Ingame.UI
                     codeImage.sprite = null;
                 }
             }
+            Resources.UnloadUnusedAssets();
         }
 
         private void OnDestroy()
