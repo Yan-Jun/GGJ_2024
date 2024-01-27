@@ -31,7 +31,7 @@ namespace GGJ.Ingame.Controller
             Assert.IsNotNull(_inputCodePanel);
 
             _nextArrangeCode = GenerateTestCode();
-            Debug.Log($"Next code: {_nextArrangeCode}");
+            //Debug.Log($"Next code: {_nextArrangeCode}");
 
             _inputCodePanel.ClearAll();
             _inputCodePanel.SetInputCodes(_nextArrangeCode);
@@ -56,7 +56,7 @@ namespace GGJ.Ingame.Controller
                     CompleteCode();
                     return;
                 }
-                Debug.Log($"Next type code: {_nextArrangeCode[_nextCodeIndex]}");
+                //Debug.Log($"Next type code: {_nextArrangeCode[_nextCodeIndex]}");
             }
         }
 
@@ -67,13 +67,13 @@ namespace GGJ.Ingame.Controller
 
         public void CompleteCode()
         {
-            Debug.Log($"Completed code: {_nextArrangeCode}");
+            //Debug.Log($"Completed code: {_nextArrangeCode}");
             _nextArrangeCode = GenerateTestCode();
             _nextCodeIndex = 0;
 
             _inputCodePanel.ClearAll();
             _inputCodePanel.SetInputCodes(_nextArrangeCode);
-            Debug.Log($"Next code: {_nextArrangeCode}");
+            //Debug.Log($"Next code: {_nextArrangeCode}");
         }
 
         private string GenerateTestCode()
