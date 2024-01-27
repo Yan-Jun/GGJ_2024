@@ -5,7 +5,7 @@ using UnityEngine.Tilemaps;
 
 public class ColorWallCreater : MonoBehaviour
 {
-    [SerializeField] Tilemap previewMap, defaultMap;
+    [SerializeField] Tilemap previewMap, defaultMap, bedrockMap;
     [SerializeField] MouseInputManager mouseInput;
 
     TileBase tileBase;
@@ -117,7 +117,8 @@ public class ColorWallCreater : MonoBehaviour
     {
         foreach (Vector2Int point in PointsInCircle((Vector2Int)currentGridPos, currentThickness, 1))
         {
-            defaultMap.SetTile((Vector3Int)point, tileBase);
+            if (CheckCanOverrideTile(bedrockMap, (Vector3Int)point))
+                defaultMap.SetTile((Vector3Int)point, tileBase);
         }
     }
 
@@ -148,5 +149,14 @@ public class ColorWallCreater : MonoBehaviour
         }
 
         return points;
+    }
+
+    private bool CheckCanOverrideTile(Tilemap tilemap, Vector3Int point)
+    {
+        if (tilemap.GetTile(point) == null)
+            return true;
+        if (tilemap.GetTile(point).name != "Bedrock" && tilemap.GetTile(point).name != "Base")
+            return true;
+        return false;
     }
 }
