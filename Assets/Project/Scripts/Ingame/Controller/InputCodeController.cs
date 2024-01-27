@@ -76,6 +76,7 @@ namespace GGJ.Ingame.Controller
                     _onTypeCompleteEvent?.Invoke();
                     return;
                 }
+                return;
                 //Debug.Log($"Next type code: {_nextArrangeCode[_nextCodeIndex]}");
             }
 
