@@ -2,24 +2,24 @@ using Cysharp.Threading.Tasks;
 using GGJ.Ingame.Common;
 using GGJ.Ingame.UI;
 using System;
-using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace GGJ.Ingame.Controller
 {
-    public class InputCodeController : MonoBehaviour
+    public class InputArrowCodeController : MonoBehaviour
     {
         [SerializeField] private InputCodePanel _targetInputCodePanel;
 
-        private string _nextArrangeCode;
+        private string[] _nextArrangeArrowCode;
         private int _nextCodeIndex;
         private bool _isWaitComplete;
 
         private IInputCodeSystem _inputCodeSystem;
         private IInputCodePanel _inputCodePanel;
 
-        private void Start ()
+        private void Start()
         {
             Initialize(
                 FindFirstObjectByType<InputCodeSystem>(),
@@ -34,11 +34,10 @@ namespace GGJ.Ingame.Controller
             Assert.IsNotNull(_inputCodeSystem);
             Assert.IsNotNull(_inputCodePanel);
 
-            _nextArrangeCode = GenerateTestCode();
-            //Debug.Log($"Next code: {_nextArrangeCode}");
+            _nextArrangeArrowCode = GenerateTestArrowCode();
 
             _inputCodePanel.ClearAll();
-            _inputCodePanel.SetInputCodes(_nextArrangeCode);
+            _inputCodePanel.SetInputArrowCodes(_nextArrangeArrowCode);
 
         }
 
@@ -47,54 +46,55 @@ namespace GGJ.Ingame.Controller
             if (_isWaitComplete)
                 return;
 
-            UpdateCheckCode();
+            UpdateCheckKeyCode();
         }
 
-        public void UpdateCheckCode()
+        public void UpdateCheckKeyCode()
         {
-            var inputCode = _inputCodeSystem.GetCurrentInputCode();
-            if (inputCode.HasValue && _nextArrangeCode[_nextCodeIndex] == char.ToLower(inputCode.Value))
+            var inputCode = _inputCodeSystem.GetCurrentKeyCode();
+            if (inputCode != null && _nextArrangeArrowCode[_nextCodeIndex] == inputCode)
             {
-                _inputCodePanel.SetCompletedIndex(_nextCodeIndex, char.ToLower(inputCode.Value));
+                _inputCodePanel.SetCompletedIndex(_nextCodeIndex, inputCode);
                 _nextCodeIndex++;
 
-                var isCompleted = CheckInputComplete(_nextCodeIndex, _nextArrangeCode);
+                var isCompleted = CheckInputComplete(_nextCodeIndex, _nextArrangeArrowCode);
                 if (isCompleted)
                 {
                     CompleteCode().Forget();
                     return;
                 }
-                //Debug.Log($"Next type code: {_nextArrangeCode[_nextCodeIndex]}");
             }
         }
 
-        public bool CheckInputComplete(int currentIndex, string arrangeCode)
+        public bool CheckInputComplete(int currentIndex, string[] arrangeArrowCode)
         {
-            return currentIndex == arrangeCode.Length;
+            return currentIndex == arrangeArrowCode.Length;
         }
+
 
         public async UniTask CompleteCode()
         {
             _isWaitComplete = true;
-            _nextArrangeCode = GenerateTestCode();
+            _nextArrangeArrowCode = GenerateTestArrowCode();
             _nextCodeIndex = 0;
 
             await UniTask.Delay(TimeSpan.FromSeconds(.5));
 
             _inputCodePanel.ClearAll();
-            await _inputCodePanel.SetInputCodes(_nextArrangeCode);
+            await _inputCodePanel.SetInputArrowCodes(_nextArrangeArrowCode);
 
             _isWaitComplete = false;
         }
 
-        private string GenerateTestCode()
+        private string[] GenerateTestArrowCode()
         {
-            var simpleCodes = new string[]
+            var arrowCodes = new string[][]
             {
-                "aaabbb",
-                "1111111",
+                new string[] { "DownArrow", "DownArrow", "DownArrow", "DownArrow"},
+                //new string[] { "UpArrow", "DownArrow", "LeftArrow", "RightArrow" }
             };
-            return simpleCodes[Random.Range(0, simpleCodes.Length)];
+
+            return arrowCodes[Random.Range(0, arrowCodes.Length)];
         }
 
     }
