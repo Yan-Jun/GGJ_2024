@@ -170,6 +170,8 @@ MonoBehaviour:
   previewMap: {fileID: 633079731}
   defaultMap: {fileID: 1315576772}
   mouseInput: {fileID: 1489572713}
+  MaxThickness: 10
+  MinThickness: 1
 --- !u!1 &633079728
 GameObject:
   m_ObjectHideFlags: 0

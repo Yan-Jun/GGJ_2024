@@ -30,6 +30,10 @@ public class ColorWallCreater : MonoBehaviour
 
     public static ColorWallCreater i;
 
+    int currentThickness = 5;
+    [SerializeField] private int MaxThickness;
+    [SerializeField] private int MinThickness;
+
     private void Awake()
     {
         i = this;
@@ -39,6 +43,15 @@ public class ColorWallCreater : MonoBehaviour
     private void OnEnable()
     {
         mouseInput.OnLeftClick += OnLeftClick;
+        mouseInput.OnRightClick += OnRightClick;
+        mouseInput.OnScroll += OnScroll;
+    }
+
+    private void OnDisable()
+    {
+        mouseInput.OnLeftClick -= OnLeftClick;
+        mouseInput.OnRightClick -= OnRightClick;
+        mouseInput.OnScroll -= OnScroll;
     }
 
     private void Update()
@@ -71,6 +84,13 @@ public class ColorWallCreater : MonoBehaviour
 
     }
 
+    private void OnScroll()
+    {
+        currentThickness = Mathf.Clamp(currentThickness + mouseInput.GetMouseScrollDelta(), MinThickness, MaxThickness);
+        previewMap.ClearAllTiles();
+        UpdatePreview();
+    }
+
     public void ObjectSelected(ColorWallBase obj)
     {
         SelectedWall = selectedWall == obj ? null : obj;
@@ -78,8 +98,14 @@ public class ColorWallCreater : MonoBehaviour
 
     private void UpdatePreview()
     {
-        previewMap.SetTile(lastGridPos, null);
-        previewMap.SetTile(currentGridPos, tileBase);
+        foreach (Vector2Int point in PointsInCircle((Vector2Int)lastGridPos, currentThickness, 1)) 
+        {
+            previewMap.SetTile((Vector3Int)point, null);
+        }
+        foreach (Vector2Int point in PointsInCircle((Vector2Int)currentGridPos, currentThickness, 1))
+        {
+            previewMap.SetTile((Vector3Int)point, tileBase);
+        }
     }
 
     private void HandleDrawing()
@@ -89,6 +115,38 @@ public class ColorWallCreater : MonoBehaviour
 
     private void DrawItem()
     {
-        defaultMap.SetTile(currentGridPos, tileBase);
+        foreach (Vector2Int point in PointsInCircle((Vector2Int)currentGridPos, currentThickness, 1))
+        {
+            defaultMap.SetTile((Vector3Int)point, tileBase);
+        }
+    }
+
+    private bool InCircle(Vector2Int point, Vector2Int circlePoint, int radius)
+    {
+        return (point - circlePoint).sqrMagnitude <= radius * radius;
+    }
+
+    private List<Vector2Int> PointsInCircle(Vector2Int circlePos, int radius, int scale)
+    {
+        List<Vector2Int> points = new List<Vector2Int>();
+
+        int minX = circlePos.x - radius;
+        int maxX = circlePos.x + radius;
+
+        int minY = circlePos.y - radius;
+        int maxY = circlePos.y + radius;
+
+        for (int y = minY; y <= maxY; y += scale)
+        {
+            for (int x = minX; x <= maxX; x += scale)
+            {
+                if (InCircle(new Vector2Int(x, y), circlePos, radius))
+                {
+                    points.Add(new Vector2Int(x, y));
+                }
+            }
+        }
+
+        return points;
     }
 }

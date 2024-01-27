@@ -11,7 +11,7 @@ public class MouseInputManager : MonoBehaviour
 
     ColorWallCreater colorWallCreater;
 
-    public event Action OnLeftClick, OnRightClick, OnExit;
+    public event Action OnLeftClick, OnRightClick, OnScroll;
 
     private void Awake()
     {
@@ -24,8 +24,8 @@ public class MouseInputManager : MonoBehaviour
             OnLeftClick?.Invoke();
         if (Input.GetMouseButton(1))
             OnRightClick?.Invoke();
-        if (Input.GetKeyDown(KeyCode.Escape))
-            OnExit?.Invoke();
+        if (Input.mouseScrollDelta.y != 0)
+            OnScroll?.Invoke();
     }
 
     public bool IsPointerOverUI()
@@ -38,5 +38,10 @@ public class MouseInputManager : MonoBehaviour
         mousePos = sceneCamera.ScreenToWorldPoint(mousePos);
         mousePos.z = 0;
         return mousePos;
+    }
+
+    public int GetMouseScrollDelta()
+    {
+        return (int)Input.mouseScrollDelta.y;
     }
 }
