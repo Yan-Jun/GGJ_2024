@@ -32,8 +32,8 @@ public class PlayerStat : MonoBehaviour
     public void AddWallPoint(string name, int amount)
     {
         if (name == "Wall_2")
-            Wall_2_Point += amount;
+            Wall_2_Point = Mathf.Clamp(Wall_2_Point + amount, 0, 5000);
         if (name == "Wall_1")
-            Wall_1_Point += amount;
+            Wall_1_Point = Mathf.Clamp(Wall_1_Point + amount, 0, 5000);
     }
 }
