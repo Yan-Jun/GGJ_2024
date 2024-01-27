@@ -1,16 +1,20 @@
+using Cysharp.Threading.Tasks;
 using GGJ.Ingame.Common;
 using GGJ.Ingame.UI;
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.Assertions;
+using Random = UnityEngine.Random;
 
 namespace GGJ.Ingame.Controller
 {
     public class InputCodeController : MonoBehaviour
     {
+        [SerializeField] private InputCodePanel _targetInputCodePanel;
+
         private string _nextArrangeCode;
         private int _nextCodeIndex;
+        private bool _isWaitComplete;
 
         private IInputCodeSystem _inputCodeSystem;
         private IInputCodePanel _inputCodePanel;
@@ -19,7 +23,7 @@ namespace GGJ.Ingame.Controller
         {
             Initialize(
                 FindFirstObjectByType<InputCodeSystem>(),
-                FindFirstObjectByType<InputCodePanel>());
+                _targetInputCodePanel);
         }
 
         private void Initialize(IInputCodeSystem inputCodeSystem, IInputCodePanel inputCodePanel)
@@ -35,26 +39,29 @@ namespace GGJ.Ingame.Controller
 
             _inputCodePanel.ClearAll();
             _inputCodePanel.SetInputCodes(_nextArrangeCode);
+
         }
 
         private void Update()
         {
+            if (_isWaitComplete)
+                return;
+
             UpdateCheckCode();
         }
 
         public void UpdateCheckCode()
         {
             var inputCode = _inputCodeSystem.GetCurrentInputCode();
-            if (inputCode.HasValue && _nextArrangeCode[_nextCodeIndex] == inputCode)
+            if (inputCode.HasValue && _nextArrangeCode[_nextCodeIndex] == char.ToLower(inputCode.Value))
             {
-                _inputCodePanel.SetCompletedIndex(_nextCodeIndex);
+                _inputCodePanel.SetCompletedIndex(_nextCodeIndex, char.ToLower(inputCode.Value));
                 _nextCodeIndex++;
 
                 var isCompleted = CheckInputComplete(_nextCodeIndex, _nextArrangeCode);
                 if (isCompleted)
                 {
-                    CompleteCode();
-                    //жие\
+                    CompleteCode().Forget();
                     PlayerStat.i.AddWallPoint("Wall_1",1000);
                     return;
                 }
@@ -64,18 +71,21 @@ namespace GGJ.Ingame.Controller
 
         public bool CheckInputComplete(int currentIndex, string arrangeCode)
         {
-            return _nextCodeIndex == arrangeCode.Length;
+            return currentIndex == arrangeCode.Length;
         }
 
-        public void CompleteCode()
+        public async UniTask CompleteCode()
         {
-            //Debug.Log($"Completed code: {_nextArrangeCode}");
+            _isWaitComplete = true;
             _nextArrangeCode = GenerateTestCode();
             _nextCodeIndex = 0;
 
+            await UniTask.Delay(TimeSpan.FromSeconds(.5));
+
             _inputCodePanel.ClearAll();
-            _inputCodePanel.SetInputCodes(_nextArrangeCode);
-            //Debug.Log($"Next code: {_nextArrangeCode}");
+            await _inputCodePanel.SetInputCodes(_nextArrangeCode);
+
+            _isWaitComplete = false;
         }
 
         private string GenerateTestCode()
@@ -84,10 +94,9 @@ namespace GGJ.Ingame.Controller
             {
                 "aaabbb",
                 "1111111",
-                "12345678",
-                "123abc",
             };
             return simpleCodes[Random.Range(0, simpleCodes.Length)];
         }
+
     }
 }
