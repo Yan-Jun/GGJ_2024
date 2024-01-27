@@ -1,10 +1,11 @@
+#nullable enable
 using UnityEngine;
 
 namespace GGJ.Ingame.Common
 {
     public interface IInputCodeSystem
     {
-        public string GetCurrentInputCode();
+        public char? GetCurrentInputCode();
     }
 
     public class InputCodeSystem : MonoBehaviour, IInputCodeSystem
@@ -32,9 +33,10 @@ namespace GGJ.Ingame.Common
             _currentInputCode = Input.inputString;
         }
 
-        public string GetCurrentInputCode()
+        public char? GetCurrentInputCode()
         {
-            return _currentInputCode;
+            var parseResult = char.TryParse(_currentInputCode, out var resultCode);
+            return parseResult ? resultCode : null; 
         }
     }
 }
