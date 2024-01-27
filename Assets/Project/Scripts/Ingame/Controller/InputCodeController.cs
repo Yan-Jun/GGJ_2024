@@ -4,7 +4,6 @@ using GGJ.Ingame.UI;
 using System;
 using UnityEngine;
 using UnityEngine.Assertions;
-using Random = UnityEngine.Random;
 
 namespace GGJ.Ingame.Controller
 {
@@ -18,23 +17,27 @@ namespace GGJ.Ingame.Controller
 
         private IInputCodeSystem _inputCodeSystem;
         private IInputCodePanel _inputCodePanel;
+        private IGenerateCodeSystem _generateCodeSystem;
+
 
         private void Start ()
         {
             Initialize(
                 FindFirstObjectByType<InputCodeSystem>(),
-                _targetInputCodePanel);
+                _targetInputCodePanel,
+                new GenerateCodeSystem());
         }
 
-        private void Initialize(IInputCodeSystem inputCodeSystem, IInputCodePanel inputCodePanel)
+        private void Initialize(IInputCodeSystem inputCodeSystem, IInputCodePanel inputCodePanel, IGenerateCodeSystem generateCodeSystem)
         {
             _inputCodeSystem = inputCodeSystem;
             _inputCodePanel = inputCodePanel;
+            _generateCodeSystem = generateCodeSystem;
 
             Assert.IsNotNull(_inputCodeSystem);
             Assert.IsNotNull(_inputCodePanel);
 
-            _nextArrangeCode = GenerateTestCode();
+            _nextArrangeCode = _generateCodeSystem.GetGenerateCode(6, 10);
             //Debug.Log($"Next code: {_nextArrangeCode}");
 
             _inputCodePanel.ClearAll();
@@ -77,7 +80,7 @@ namespace GGJ.Ingame.Controller
         public async UniTask CompleteCode()
         {
             _isWaitComplete = true;
-            _nextArrangeCode = GenerateTestCode();
+            _nextArrangeCode = _generateCodeSystem.GetGenerateCode(6, 10);
             _nextCodeIndex = 0;
 
             await UniTask.Delay(TimeSpan.FromSeconds(.5));
@@ -87,16 +90,5 @@ namespace GGJ.Ingame.Controller
 
             _isWaitComplete = false;
         }
-
-        private string GenerateTestCode()
-        {
-            var simpleCodes = new string[]
-            {
-                "aaabbb",
-                "1111111",
-            };
-            return simpleCodes[Random.Range(0, simpleCodes.Length)];
-        }
-
     }
 }
