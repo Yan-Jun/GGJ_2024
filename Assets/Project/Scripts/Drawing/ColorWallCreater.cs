@@ -110,10 +110,10 @@ public class ColorWallCreater : MonoBehaviour
 
     private void HandleDrawing()
     {
-        int pointCount = PointsInCircle((Vector2Int)currentGridPos, currentThickness, 1).Count;
-        if (pointCount > PlayerStat.i.GetWallPoint(tileBase.name))
-            return;
-        PlayerStat.i.AddWallPoint(tileBase.name, - pointCount);
+        //int pointCount = PointsInCircle((Vector2Int)currentGridPos, currentThickness, 1).Count;
+        //if (pointCount > PlayerStat.i.GetWallPoint(tileBase.name))
+        //    return;
+        //PlayerStat.i.AddWallPoint(tileBase.name, - pointCount);
         DrawItem();
     }
 
@@ -121,8 +121,11 @@ public class ColorWallCreater : MonoBehaviour
     {
         foreach (Vector2Int point in PointsInCircle((Vector2Int)currentGridPos, currentThickness, 1))
         {
-            if (CheckCanOverrideTile(bedrockMap, (Vector3Int)point))
+            if (CheckCanOverrideTile(bedrockMap, (Vector3Int)point) && !CheckAlreadyPaintedTile(defaultMap, (Vector3Int)point, tileBase.name)) 
+            {
+                PlayerStat.i.AddWallPoint(tileBase.name, -1);
                 defaultMap.SetTile((Vector3Int)point, tileBase);
+            }
         }
     }
 
@@ -160,6 +163,12 @@ public class ColorWallCreater : MonoBehaviour
         if (tilemap.GetTile(point) == null)
             return true;
         if (tilemap.GetTile(point).name != "Bedrock" && tilemap.GetTile(point).name != "Base")
+            return true;
+        return false;
+    }
+    private bool CheckAlreadyPaintedTile(Tilemap tilemap, Vector3Int point, string name)
+    {
+        if (tilemap.GetTile(point) != null && tilemap.GetTile(point).name == name)
             return true;
         return false;
     }
