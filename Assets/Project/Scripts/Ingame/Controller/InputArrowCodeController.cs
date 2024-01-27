@@ -4,7 +4,6 @@ using GGJ.Ingame.UI;
 using System;
 using UnityEngine.Assertions;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace GGJ.Ingame.Controller
 {
@@ -18,23 +17,27 @@ namespace GGJ.Ingame.Controller
 
         private IInputCodeSystem _inputCodeSystem;
         private IInputCodePanel _inputCodePanel;
+        private IGenerateCodeSystem _generateCodeSystem;
+
 
         private void Start()
         {
             Initialize(
                 FindFirstObjectByType<InputCodeSystem>(),
-                _targetInputCodePanel);
+                _targetInputCodePanel,
+                new GenerateCodeSystem());
         }
 
-        private void Initialize(IInputCodeSystem inputCodeSystem, IInputCodePanel inputCodePanel)
+        private void Initialize(IInputCodeSystem inputCodeSystem, IInputCodePanel inputCodePanel, IGenerateCodeSystem generateCodeSystem)
         {
             _inputCodeSystem = inputCodeSystem;
             _inputCodePanel = inputCodePanel;
+            _generateCodeSystem = generateCodeSystem;
 
             Assert.IsNotNull(_inputCodeSystem);
             Assert.IsNotNull(_inputCodePanel);
 
-            _nextArrangeArrowCode = GenerateTestArrowCode();
+            _nextArrangeArrowCode = _generateCodeSystem.GetGenerateArrowCode(3, 5);
 
             _inputCodePanel.ClearAll();
             _inputCodePanel.SetInputArrowCodes(_nextArrangeArrowCode);
@@ -75,7 +78,7 @@ namespace GGJ.Ingame.Controller
         public async UniTask CompleteCode()
         {
             _isWaitComplete = true;
-            _nextArrangeArrowCode = GenerateTestArrowCode();
+            _nextArrangeArrowCode = _generateCodeSystem.GetGenerateArrowCode(3, 5);
             _nextCodeIndex = 0;
 
             await UniTask.Delay(TimeSpan.FromSeconds(.5));
@@ -85,17 +88,5 @@ namespace GGJ.Ingame.Controller
 
             _isWaitComplete = false;
         }
-
-        private string[] GenerateTestArrowCode()
-        {
-            var arrowCodes = new string[][]
-            {
-                new string[] { "DownArrow", "DownArrow", "DownArrow", "DownArrow"},
-                //new string[] { "UpArrow", "DownArrow", "LeftArrow", "RightArrow" }
-            };
-
-            return arrowCodes[Random.Range(0, arrowCodes.Length)];
-        }
-
     }
 }
