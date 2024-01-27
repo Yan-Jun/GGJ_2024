@@ -4,16 +4,34 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.Events;
 
 namespace GGJ.Ingame.Controller
 {
-    public class InputCodeController : MonoBehaviour
+    public interface IInputCodeEvent
+    {
+        UnityAction OnTypeSuccessEvent();
+        UnityAction OnTypeFailEvent();
+        UnityAction OnTypeCompleteEvent();
+    }
+
+    public class InputCodeController : MonoBehaviour, IInputCodeEvent
     {
         private string _nextArrangeCode;
         private int _nextCodeIndex;
 
         private IInputCodeSystem _inputCodeSystem;
         private IInputCodePanel _inputCodePanel;
+
+        private UnityAction _onTypeSuccessEvent;
+        private UnityAction _onTypeFailEvent;
+        private UnityAction _onTypeCompleteEvent;
+
+        public UnityAction OnTypeSuccessEvent() => _onTypeSuccessEvent;
+        public UnityAction OnTypeFailEvent() => _onTypeFailEvent;
+        public UnityAction OnTypeCompleteEvent() => _onTypeCompleteEvent;
+
+
 
         private void Start ()
         {
@@ -22,7 +40,7 @@ namespace GGJ.Ingame.Controller
                 FindFirstObjectByType<InputCodePanel>());
         }
 
-        private void Initialize(IInputCodeSystem inputCodeSystem, IInputCodePanel inputCodePanel)
+        public void Initialize(IInputCodeSystem inputCodeSystem, IInputCodePanel inputCodePanel)
         {
             _inputCodeSystem = inputCodeSystem;
             _inputCodePanel = inputCodePanel;
@@ -48,15 +66,22 @@ namespace GGJ.Ingame.Controller
             if (inputCode.HasValue && _nextArrangeCode[_nextCodeIndex] == inputCode)
             {
                 _inputCodePanel.SetCompletedIndex(_nextCodeIndex);
+                _onTypeSuccessEvent?.Invoke();
                 _nextCodeIndex++;
 
                 var isCompleted = CheckInputComplete(_nextCodeIndex, _nextArrangeCode);
                 if (isCompleted)
                 {
                     CompleteCode();
+                    _onTypeCompleteEvent?.Invoke();
                     return;
                 }
                 //Debug.Log($"Next type code: {_nextArrangeCode[_nextCodeIndex]}");
+            }
+
+            if (inputCode.HasValue)
+            {
+                _onTypeFailEvent?.Invoke();
             }
         }
 
