@@ -34,6 +34,8 @@ public class ColorWallCreater : MonoBehaviour
     [SerializeField] private int MaxThickness;
     [SerializeField] private int MinThickness;
 
+    int currentAltCount;
+
     private void Awake()
     {
         i = this;
@@ -125,6 +127,8 @@ public class ColorWallCreater : MonoBehaviour
             {
                 PlayerStat.i.AddWallPoint(tileBase.name, -1);
                 defaultMap.SetTile((Vector3Int)point, tileBase);
+
+                CheckAddAltCount((Vector3Int)point);
             }
         }
     }
@@ -171,5 +175,27 @@ public class ColorWallCreater : MonoBehaviour
         if (tilemap.GetTile(point) != null && tilemap.GetTile(point).name == name)
             return true;
         return false;
+    }
+    private void CheckAddAltCount(Vector3Int point)
+    {
+        if (point.y < -72)
+        {
+            currentAltCount++;
+            if (currentAltCount > 3225)
+            {
+                //cast alt
+
+                for (int x = 171; x > -172; x--)
+                {
+                    for (int y = -72; y > -98; y--) 
+                    {
+                        Vector3Int currentTile = new Vector3Int(x, y, 0);
+                        if (defaultMap.GetTile(currentTile) != null && defaultMap.GetTile(currentTile).name != "Bedrock") 
+                            defaultMap.SetTile(currentTile, null);
+                    }
+                }
+                currentAltCount = 0;
+            }
+        }
     }
 }
