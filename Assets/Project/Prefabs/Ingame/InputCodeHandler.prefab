@@ -59,9 +59,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _audioSetting:
-    SuccessClip: {fileID: 0}
-    FailClip: {fileID: 0}
-    CompleteClip: {fileID: 0}
+    SuccessClip: {fileID: 8300000, guid: b06645520697d884b8cc2e7e572ed2fd, type: 3}
+    FailClip: {fileID: 8300000, guid: 854a3a0ce15a69045a686601fba02e08, type: 3}
+    CompleteClip: {fileID: 8300000, guid: 8c2380a4d820fb04fb373e82c2750bee, type: 3}
+  _targetInputCodePanel: {fileID: 0}
 --- !u!82 &8681898524163445320
 AudioSource:
   m_ObjectHideFlags: 0
