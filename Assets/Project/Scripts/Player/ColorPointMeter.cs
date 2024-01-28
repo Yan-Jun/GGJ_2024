@@ -13,7 +13,7 @@ public class ColorPointMeter : MonoBehaviour
     [SerializeField] private WallAmountBar _greenMeterBar;
     [SerializeField] private WallAmountBar _brownMeterBar;
 
-    private void Awake()
+    private void Start()
     {
         stat = PlayerStat.i;
     }
