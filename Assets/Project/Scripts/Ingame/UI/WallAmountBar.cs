@@ -12,16 +12,9 @@ namespace GGJ.Ingame.UI
         private int _maxAmount;
         private int _currentAmount;
 
-        public int testAmount;
-
         private void Start()
         {
             Initialize(5000, 5000);
-        }
-
-        private void Update()
-        {
-            UpdateWallAmount(testAmount);
         }
 
         public void UpdateWallAmount(int currentAmount)
