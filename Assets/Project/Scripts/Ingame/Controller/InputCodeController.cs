@@ -65,7 +65,7 @@ namespace GGJ.Ingame.Controller
                 if (isCompleted)
                 {
                     CompleteCode().Forget();
-                    PlayerStat.i.AddWallPoint("Wall_1",1000);
+                    PlayerStat.i.AddWallPoint("Wall_2",1000);
                     return;
                 }
                 //Debug.Log($"Next type code: {_nextArrangeCode[_nextCodeIndex]}");

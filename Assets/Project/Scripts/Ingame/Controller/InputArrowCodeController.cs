@@ -64,6 +64,7 @@ namespace GGJ.Ingame.Controller
                 if (isCompleted)
                 {
                     CompleteCode().Forget();
+                    PlayerStat.i.AddWallPoint("Wall_1", 1000);
                     return;
                 }
             }
