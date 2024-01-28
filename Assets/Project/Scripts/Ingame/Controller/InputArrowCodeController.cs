@@ -9,6 +9,7 @@ namespace GGJ.Ingame.Controller
 {
     public class InputArrowCodeController : MonoBehaviour
     {
+        [SerializeField] private AudioSetting _audioSetting;
         [SerializeField] private InputCodePanel _targetInputCodePanel;
 
         private string[] _nextArrangeArrowCode;
@@ -19,20 +20,25 @@ namespace GGJ.Ingame.Controller
         private IInputCodePanel _inputCodePanel;
         private IGenerateCodeSystem _generateCodeSystem;
 
+        private AudioSource _audioSource;
 
         private void Start()
         {
             Initialize(
                 FindFirstObjectByType<InputCodeSystem>(),
                 _targetInputCodePanel,
-                new GenerateCodeSystem());
+                new GenerateCodeSystem(), 
+                GetComponent<AudioSource>()
+                );
+
         }
 
-        private void Initialize(IInputCodeSystem inputCodeSystem, IInputCodePanel inputCodePanel, IGenerateCodeSystem generateCodeSystem)
+        private void Initialize(IInputCodeSystem inputCodeSystem, IInputCodePanel inputCodePanel, IGenerateCodeSystem generateCodeSystem, AudioSource audioSource)
         {
             _inputCodeSystem = inputCodeSystem;
             _inputCodePanel = inputCodePanel;
             _generateCodeSystem = generateCodeSystem;
+            _audioSource = audioSource;
 
             Assert.IsNotNull(_inputCodeSystem);
             Assert.IsNotNull(_inputCodePanel);
@@ -58,6 +64,7 @@ namespace GGJ.Ingame.Controller
             if (inputCode != null && _nextArrangeArrowCode[_nextCodeIndex] == inputCode)
             {
                 _inputCodePanel.SetCompletedIndex(_nextCodeIndex, inputCode);
+                _audioSource.PlayOneShot(_audioSetting.SuccessClip);
                 _nextCodeIndex++;
 
                 var isCompleted = CheckInputComplete(_nextCodeIndex, _nextArrangeArrowCode);
@@ -65,8 +72,15 @@ namespace GGJ.Ingame.Controller
                 {
                     CompleteCode().Forget();
                     PlayerStat.i.AddWallPoint("Wall_1", 1000);
+                    _audioSource.PlayOneShot(_audioSetting.CompleteClip);
                     return;
                 }
+                return;
+            }
+
+            if (inputCode != null)
+            {
+                _audioSource.PlayOneShot(_audioSetting.FailClip);
             }
         }
 
@@ -89,5 +103,14 @@ namespace GGJ.Ingame.Controller
 
             _isWaitComplete = false;
         }
+
+        [System.Serializable]
+        public struct AudioSetting
+        {
+            public AudioClip SuccessClip;
+            public AudioClip FailClip;
+            public AudioClip CompleteClip;
+        }
+
     }
 }

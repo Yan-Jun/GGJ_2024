@@ -7,10 +7,10 @@ using UnityEngine.Assertions;
 
 namespace GGJ.Ingame.Controller
 {
-    public class InputCodeController : MonoBehaviour
+    public class InputCodeController : MonoBehaviour 
     {
+        [SerializeField] private AudioSetting _audioSetting;
         [SerializeField] private InputCodePanel _targetInputCodePanel;
-
         private string _nextArrangeCode;
         private int _nextCodeIndex;
         private bool _isWaitComplete;
@@ -19,23 +19,29 @@ namespace GGJ.Ingame.Controller
         private IInputCodePanel _inputCodePanel;
         private IGenerateCodeSystem _generateCodeSystem;
 
+        private AudioSource _audioSource;
 
         private void Start ()
         {
             Initialize(
                 FindFirstObjectByType<InputCodeSystem>(),
                 _targetInputCodePanel,
-                new GenerateCodeSystem());
+                new GenerateCodeSystem(),
+                GetComponent<AudioSource>()
+                );
         }
 
-        private void Initialize(IInputCodeSystem inputCodeSystem, IInputCodePanel inputCodePanel, IGenerateCodeSystem generateCodeSystem)
+
+        private void Initialize(IInputCodeSystem inputCodeSystem, IInputCodePanel inputCodePanel, IGenerateCodeSystem generateCodeSystem, AudioSource audioSource)
         {
             _inputCodeSystem = inputCodeSystem;
             _inputCodePanel = inputCodePanel;
             _generateCodeSystem = generateCodeSystem;
+            _audioSource = audioSource;
 
             Assert.IsNotNull(_inputCodeSystem);
             Assert.IsNotNull(_inputCodePanel);
+            Assert.IsNotNull(_audioSource);
 
             _nextArrangeCode = _generateCodeSystem.GetGenerateCode(6, 10);
             //Debug.Log($"Next code: {_nextArrangeCode}");
@@ -59,6 +65,7 @@ namespace GGJ.Ingame.Controller
             if (inputCode.HasValue && _nextArrangeCode[_nextCodeIndex] == char.ToLower(inputCode.Value))
             {
                 _inputCodePanel.SetCompletedIndex(_nextCodeIndex, char.ToLower(inputCode.Value));
+                _audioSource.PlayOneShot(_audioSetting.SuccessClip);
                 _nextCodeIndex++;
 
                 var isCompleted = CheckInputComplete(_nextCodeIndex, _nextArrangeCode);
@@ -66,9 +73,16 @@ namespace GGJ.Ingame.Controller
                 {
                     CompleteCode().Forget();
                     PlayerStat.i.AddWallPoint("Wall_2",1000);
+                    _audioSource.PlayOneShot(_audioSetting.CompleteClip);
                     return;
                 }
+                return;
                 //Debug.Log($"Next type code: {_nextArrangeCode[_nextCodeIndex]}");
+            }
+
+            if (inputCode.HasValue)
+            {
+                _audioSource.PlayOneShot(_audioSetting.FailClip);
             }
         }
 
@@ -90,5 +104,13 @@ namespace GGJ.Ingame.Controller
 
             _isWaitComplete = false;
         }
+
+        [System.Serializable]
+        public struct AudioSetting
+        {
+            public AudioClip SuccessClip;
+            public AudioClip FailClip;
+            public AudioClip CompleteClip;
+        } 
     }
 }

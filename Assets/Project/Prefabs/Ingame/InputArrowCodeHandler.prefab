@@ -50,7 +50,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3815541878668333615, guid: f803155917a141d41930ab1aa746cca3, type: 3}
       propertyPath: m_Name
-      value: InputArrowCodeHandler Variant
+      value: InputArrowCodeHandler
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 5612283382376255570, guid: f803155917a141d41930ab1aa746cca3, type: 3}
@@ -58,7 +58,7 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 3815541878668333615, guid: f803155917a141d41930ab1aa746cca3, type: 3}
-      insertIndex: -1
+      insertIndex: 2
       addedObject: {fileID: 4686108209348112406}
   m_SourcePrefab: {fileID: 100100000, guid: f803155917a141d41930ab1aa746cca3, type: 3}
 --- !u!1 &2527101532259321475 stripped
@@ -78,4 +78,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a55b16c3453ced4cb9c0e89855affa8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _audioSetting:
+    SuccessClip: {fileID: 8300000, guid: b06645520697d884b8cc2e7e572ed2fd, type: 3}
+    FailClip: {fileID: 8300000, guid: 854a3a0ce15a69045a686601fba02e08, type: 3}
+    CompleteClip: {fileID: 8300000, guid: 8c2380a4d820fb04fb373e82c2750bee, type: 3}
   _targetInputCodePanel: {fileID: 0}

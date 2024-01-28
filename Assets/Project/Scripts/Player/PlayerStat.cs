@@ -1,24 +1,13 @@
+using GGJ.Ingame.Common;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerStat : MonoBehaviour
+public class PlayerStat : SingletonBehaviour<PlayerStat>
 {
-    public static PlayerStat i;
-
     public int Health;
     public int Wall_2_Point;
     public int Wall_1_Point;
-
-    private void Awake()
-    {
-        i = this;
-    }
-
-    private void Update()
-    {
-        
-    }
 
     public int GetWallPoint(string name)
     {

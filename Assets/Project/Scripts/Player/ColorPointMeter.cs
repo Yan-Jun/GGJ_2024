@@ -1,3 +1,4 @@
+using GGJ.Ingame.UI;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,8 +8,10 @@ public class ColorPointMeter : MonoBehaviour
 {
     private PlayerStat stat;
 
-    [SerializeField] private Slider greenMeter;
-    [SerializeField] private Slider brownMeter;
+    //[SerializeField] private Slider greenMeter;
+    //[SerializeField] private Slider brownMeter;
+    [SerializeField] private WallAmountBar _greenMeterBar;
+    [SerializeField] private WallAmountBar _brownMeterBar;
 
     private void Awake()
     {
@@ -17,7 +20,9 @@ public class ColorPointMeter : MonoBehaviour
 
     private void Update()
     {
-        greenMeter.value = stat.Wall_2_Point;
-        brownMeter.value = stat.Wall_1_Point;
+        //greenMeter.value = stat.Wall_2_Point;
+        //brownMeter.value = stat.Wall_1_Point;
+        _greenMeterBar.UpdateWallAmount(stat.Wall_2_Point);
+        _brownMeterBar.UpdateWallAmount(stat.Wall_1_Point);
     }
 }
