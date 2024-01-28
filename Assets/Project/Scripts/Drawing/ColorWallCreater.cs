@@ -217,6 +217,7 @@ public class ColorWallCreater : MonoBehaviour
         if (value)
         {
             //clear enemy and heal 1 hp
+            EnemyManager.i.ClearAllEnemy();
 
             for (int x = 171; x > -172; x--)
             {

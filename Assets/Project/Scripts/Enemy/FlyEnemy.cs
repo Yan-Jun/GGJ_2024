@@ -87,7 +87,7 @@ public class FlyEnemy : MonoBehaviour
         spriteRenderer.color = new Color(1, value, value, 1);
     }
 
-    private void OnDeath()
+    public void OnDeath()
     {
         isDead = true;
         Vector3Int gridPos = ColorWallCreater.i.previewMap.WorldToCell(transform.position);

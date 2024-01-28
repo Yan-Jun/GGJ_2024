@@ -1,13 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using GGJ.Ingame.Common;
 
-public class EnemyManager : MonoBehaviour
+public class EnemyManager : SingletonBehaviour<EnemyManager>
 {
     [SerializeField] GameObject FlyEnemy;
 
     [SerializeField] Andras andras;
     [SerializeField] Paimon paimon;
+
+    List<GameObject> AllEnemy = new List<GameObject>();
 
     //wave
     public float waveCurrentInterval;
@@ -119,6 +122,7 @@ public class EnemyManager : MonoBehaviour
             flyEnemy.Speed += count*3;
             flyEnemy.Andras = andras;
             flyEnemy.Paimon = paimon;
+            AllEnemy.Add(flyEnemy.gameObject);
         }
         else
         {
@@ -129,6 +133,7 @@ public class EnemyManager : MonoBehaviour
             flyEnemy.Speed += count * 3;
             flyEnemy.Andras = andras;
             flyEnemy.Paimon = paimon;
+            AllEnemy.Add(flyEnemy.gameObject);
         }
     }
 
@@ -151,5 +156,14 @@ public class EnemyManager : MonoBehaviour
             rngPoint.x = -195f;
         }
         return rngPoint;
+    }
+
+    public void ClearAllEnemy()
+    {
+        foreach (GameObject gameObject in AllEnemy)
+        {
+            Destroy(gameObject);
+        }
+        AllEnemy.Clear();
     }
 }
