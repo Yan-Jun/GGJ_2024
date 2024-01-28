@@ -75,6 +75,7 @@ namespace GGJ.Ingame.Controller
                     _audioSource.PlayOneShot(_audioSetting.CompleteClip);
                     return;
                 }
+                return;
             }
 
             if (inputCode != null)
