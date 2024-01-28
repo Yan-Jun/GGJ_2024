@@ -5,7 +5,7 @@ using UnityEngine.Tilemaps;
 
 public class ColorWallCreater : MonoBehaviour
 {
-    [SerializeField] Tilemap previewMap, defaultMap, bedrockMap;
+    public Tilemap previewMap, defaultMap, bedrockMap;
     [SerializeField] MouseInputManager mouseInput;
 
     TileBase tileBase;
@@ -35,6 +35,8 @@ public class ColorWallCreater : MonoBehaviour
     [SerializeField] private int MinThickness;
 
     int currentAltCount;
+
+    bool doCastAlt;
 
     private void Awake()
     {
@@ -119,16 +121,35 @@ public class ColorWallCreater : MonoBehaviour
         DrawItem();
     }
 
+    public int ClearItem(Vector3Int deathPos, int radius)
+    {
+        int clearAmount = 0;
+        foreach (Vector2Int point in PointsInCircle((Vector2Int)deathPos, radius, 1))
+        {
+            if (bedrockMap.GetTile((Vector3Int)point) == null || bedrockMap.GetTile((Vector3Int)point).name != "Bedrock") 
+            {
+                if (defaultMap.GetTile((Vector3Int)point) != null)
+                {
+                    clearAmount++; 
+                    defaultMap.SetTile((Vector3Int)point, null);
+                }
+            }
+        }
+        return clearAmount;
+    }
+
     private void DrawItem()
     {
         foreach (Vector2Int point in PointsInCircle((Vector2Int)currentGridPos, currentThickness, 1))
         {
             if (CheckCanOverrideTile(bedrockMap, (Vector3Int)point) && !CheckAlreadyPaintedTile(defaultMap, (Vector3Int)point, tileBase.name)) 
             {
-                PlayerStat.instance.AddWallPoint(tileBase.name, -1);
-                defaultMap.SetTile((Vector3Int)point, tileBase);
-
                 CheckAddAltCount((Vector3Int)point);
+
+                PlayerStat.i.AddWallPoint(tileBase.name, -1);
+                defaultMap.SetTile((Vector3Int)point, tileBase);
+                
+                CastAlt(doCastAlt);
             }
         }
     }
@@ -180,22 +201,35 @@ public class ColorWallCreater : MonoBehaviour
     {
         if (point.y < -72)
         {
+            if (defaultMap.GetTile(point) != null)
+                return;
+
             currentAltCount++;
+            //Debug.Log(currentAltCount);
             if (currentAltCount > 3225)
             {
-                //cast alt
-
-                for (int x = 171; x > -172; x--)
-                {
-                    for (int y = -72; y > -98; y--) 
-                    {
-                        Vector3Int currentTile = new Vector3Int(x, y, 0);
-                        if (defaultMap.GetTile(currentTile) != null && defaultMap.GetTile(currentTile).name != "Bedrock") 
-                            defaultMap.SetTile(currentTile, null);
-                    }
-                }
-                currentAltCount = 0;
+                doCastAlt = true;
             }
+        }
+    }
+    private void CastAlt(bool value)
+    {
+        if (value)
+        {
+            //clear enemy and heal 1 hp
+
+            for (int x = 171; x > -172; x--)
+            {
+                for (int y = -72; y > -98; y--)
+                {
+                    Vector3Int currentTile = new Vector3Int(x, y, 0);
+                    if (defaultMap.GetTile(currentTile) != null && defaultMap.GetTile(currentTile).name != "Bedrock")
+                        defaultMap.SetTile(currentTile, null);
+                }
+            }
+            currentAltCount = 0;
+
+            doCastAlt = false;
         }
     }
 }
