@@ -3,7 +3,14 @@ guid: 65c1787b4a411974c93f3e35a00db46b
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - GroundEnemyFootsteps: {fileID: 8300000, guid: 2cbc6fb760b730441b89e87cf9db2909, type: 3}
+  - FlyingEnemyFootsteps: {fileID: 8300000, guid: 74c264f8aa90e6148b6ebaa195f3d090, type: 3}
+  - DestroyDefense: {fileID: 8300000, guid: 85852ca03f14c0c439e5e18ac0ce0f7b, type: 3}
+  - Draw: {fileID: 8300000, guid: cd9bda3296e5e29499930b101f5cbc0f, type: 3}
+  - GetPoint: {fileID: 8300000, guid: 4e08cdd8ce080a848ad9de52c432241c, type: 3}
+  - Superattack: {fileID: 8300000, guid: 15688f8237f618149842953a4170a120, type: 3}
+  - Clearance: {fileID: 8300000, guid: 7766047100f6a3d40ac77dbccdf14e8f, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

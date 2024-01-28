@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
+using GGJ.Ingame.Common;
 
-public class AudioManger : MonoBehaviour
+public class AudioManger : SingletonBehaviour<AudioManger>
 {
-    List<AudioSource> audios = new List<AudioSource>();
+    AudioSource audio;
     public AudioClip GroundEnemyFootsteps;
     public AudioClip FlyingEnemyFootsteps;
     public AudioClip DestroyDefense;
@@ -15,19 +16,14 @@ public class AudioManger : MonoBehaviour
     public AudioClip Clearance;
     void Start()
     {
-        for (int i = 0; i < 7; i++)
-        {
-            var audio = this.gameObject.AddComponent<AudioSource>();
-            audios.Add(audio);
-        }
+        audio = GetComponent<AudioSource>();
     }
 
-    void Play(int index, string name, bool isloop)
+    public void Play(string name, bool isloop)
     {
         var clip = GetAudioClip(name);
         if (clip != null)
         {
-            var audio = audios[index];
             audio.clip = clip;
             audio.loop = isloop;
             audio.Play();

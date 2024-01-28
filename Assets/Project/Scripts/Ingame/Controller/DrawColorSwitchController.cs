@@ -44,6 +44,7 @@ namespace GGJ.Ingame.Controller
             {
                 // Right click
                 NextDrawType();
+                AudioManger.i.Play("GetPoint", false);
             }
         }
 

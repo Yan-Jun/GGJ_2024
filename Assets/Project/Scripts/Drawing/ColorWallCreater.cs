@@ -119,6 +119,8 @@ public class ColorWallCreater : MonoBehaviour
             return;
         
         DrawItem();
+
+        AudioManger.i.Play("Draw", false);
     }
 
     public int ClearItem(Vector3Int deathPos, int radius)
@@ -232,6 +234,8 @@ public class ColorWallCreater : MonoBehaviour
             currentAltCount = 0;
 
             doCastAlt = false;
+
+            AudioManger.i.Play("Superattack", false);
         }
     }
 }
