@@ -36,6 +36,8 @@ public class ColorWallCreater : MonoBehaviour
 
     int currentAltCount;
 
+    bool doCastAlt;
+
     private void Awake()
     {
         i = this;
@@ -125,10 +127,12 @@ public class ColorWallCreater : MonoBehaviour
         {
             if (CheckCanOverrideTile(bedrockMap, (Vector3Int)point) && !CheckAlreadyPaintedTile(defaultMap, (Vector3Int)point, tileBase.name)) 
             {
+                CheckAddAltCount((Vector3Int)point);
+
                 PlayerStat.i.AddWallPoint(tileBase.name, -1);
                 defaultMap.SetTile((Vector3Int)point, tileBase);
-
-                CheckAddAltCount((Vector3Int)point);
+                
+                CastAlt(doCastAlt);
             }
         }
     }
@@ -180,22 +184,35 @@ public class ColorWallCreater : MonoBehaviour
     {
         if (point.y < -72)
         {
+            if (defaultMap.GetTile(point) != null)
+                return;
+
             currentAltCount++;
+            Debug.Log(currentAltCount);
             if (currentAltCount > 3225)
             {
-                //cast alt
-
-                for (int x = 171; x > -172; x--)
-                {
-                    for (int y = -72; y > -98; y--) 
-                    {
-                        Vector3Int currentTile = new Vector3Int(x, y, 0);
-                        if (defaultMap.GetTile(currentTile) != null && defaultMap.GetTile(currentTile).name != "Bedrock") 
-                            defaultMap.SetTile(currentTile, null);
-                    }
-                }
-                currentAltCount = 0;
+                doCastAlt = true;
             }
+        }
+    }
+    private void CastAlt(bool value)
+    {
+        if (value)
+        {
+            //clear enemy and heal 1 hp
+
+            for (int x = 171; x > -172; x--)
+            {
+                for (int y = -72; y > -98; y--)
+                {
+                    Vector3Int currentTile = new Vector3Int(x, y, 0);
+                    if (defaultMap.GetTile(currentTile) != null && defaultMap.GetTile(currentTile).name != "Bedrock")
+                        defaultMap.SetTile(currentTile, null);
+                }
+            }
+            currentAltCount = 0;
+
+            doCastAlt = false;
         }
     }
 }
