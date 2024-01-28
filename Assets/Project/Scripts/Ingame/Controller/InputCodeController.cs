@@ -1,7 +1,7 @@
+using Cysharp.Threading.Tasks;
 using GGJ.Ingame.Common;
 using GGJ.Ingame.UI;
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -9,52 +9,62 @@ namespace GGJ.Ingame.Controller
 {
     public class InputCodeController : MonoBehaviour
     {
+        [SerializeField] private InputCodePanel _targetInputCodePanel;
+
         private string _nextArrangeCode;
         private int _nextCodeIndex;
+        private bool _isWaitComplete;
 
         private IInputCodeSystem _inputCodeSystem;
         private IInputCodePanel _inputCodePanel;
+        private IGenerateCodeSystem _generateCodeSystem;
+
 
         private void Start ()
         {
             Initialize(
                 FindFirstObjectByType<InputCodeSystem>(),
-                FindFirstObjectByType<InputCodePanel>());
+                _targetInputCodePanel,
+                new GenerateCodeSystem());
         }
 
-        private void Initialize(IInputCodeSystem inputCodeSystem, IInputCodePanel inputCodePanel)
+        private void Initialize(IInputCodeSystem inputCodeSystem, IInputCodePanel inputCodePanel, IGenerateCodeSystem generateCodeSystem)
         {
             _inputCodeSystem = inputCodeSystem;
             _inputCodePanel = inputCodePanel;
+            _generateCodeSystem = generateCodeSystem;
 
             Assert.IsNotNull(_inputCodeSystem);
             Assert.IsNotNull(_inputCodePanel);
 
-            _nextArrangeCode = GenerateTestCode();
+            _nextArrangeCode = _generateCodeSystem.GetGenerateCode(6, 10);
             //Debug.Log($"Next code: {_nextArrangeCode}");
 
             _inputCodePanel.ClearAll();
             _inputCodePanel.SetInputCodes(_nextArrangeCode);
+
         }
 
         private void Update()
         {
+            if (_isWaitComplete)
+                return;
+
             UpdateCheckCode();
         }
 
         public void UpdateCheckCode()
         {
             var inputCode = _inputCodeSystem.GetCurrentInputCode();
-            if (inputCode.HasValue && _nextArrangeCode[_nextCodeIndex] == inputCode)
+            if (inputCode.HasValue && _nextArrangeCode[_nextCodeIndex] == char.ToLower(inputCode.Value))
             {
-                _inputCodePanel.SetCompletedIndex(_nextCodeIndex);
+                _inputCodePanel.SetCompletedIndex(_nextCodeIndex, char.ToLower(inputCode.Value));
                 _nextCodeIndex++;
 
                 var isCompleted = CheckInputComplete(_nextCodeIndex, _nextArrangeCode);
                 if (isCompleted)
                 {
-                    CompleteCode();
-                    //жие\
+                    CompleteCode().Forget();
                     PlayerStat.i.AddWallPoint("Wall_1",1000);
                     return;
                 }
@@ -64,30 +74,21 @@ namespace GGJ.Ingame.Controller
 
         public bool CheckInputComplete(int currentIndex, string arrangeCode)
         {
-            return _nextCodeIndex == arrangeCode.Length;
+            return currentIndex == arrangeCode.Length;
         }
 
-        public void CompleteCode()
+        public async UniTask CompleteCode()
         {
-            //Debug.Log($"Completed code: {_nextArrangeCode}");
-            _nextArrangeCode = GenerateTestCode();
+            _isWaitComplete = true;
+            _nextArrangeCode = _generateCodeSystem.GetGenerateCode(6, 10);
             _nextCodeIndex = 0;
 
-            _inputCodePanel.ClearAll();
-            _inputCodePanel.SetInputCodes(_nextArrangeCode);
-            //Debug.Log($"Next code: {_nextArrangeCode}");
-        }
+            await UniTask.Delay(TimeSpan.FromSeconds(.5));
 
-        private string GenerateTestCode()
-        {
-            var simpleCodes = new string[]
-            {
-                "aaabbb",
-                "1111111",
-                "12345678",
-                "123abc",
-            };
-            return simpleCodes[Random.Range(0, simpleCodes.Length)];
+            _inputCodePanel.ClearAll();
+            await _inputCodePanel.SetInputCodes(_nextArrangeCode);
+
+            _isWaitComplete = false;
         }
     }
 }
