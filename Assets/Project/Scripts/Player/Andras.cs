@@ -1,18 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using GGJ.Ingame.Controller;
 
 public class Andras : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField] MouseInputManager mouseInput;
+    [SerializeField] DrawColorSwitchController drawColorSwitchController;
 
-    // Update is called once per frame
+    [SerializeField] Vector3 offset;
+
+    [SerializeField] SpriteRenderer spriteRenderer;
+
+    [SerializeField] Sprite drawing;
+    [SerializeField] Sprite idle;
+
     void Update()
     {
-        
+        transform.position = mouseInput.GetMousePos() + offset;
+
+        if (drawColorSwitchController._currentIndex == 0)
+            spriteRenderer.sprite = idle;
+        else
+            spriteRenderer.sprite = drawing;
     }
+
+
 }

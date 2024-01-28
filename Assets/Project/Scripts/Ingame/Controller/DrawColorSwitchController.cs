@@ -16,7 +16,7 @@ namespace GGJ.Ingame.Controller
 
         [SerializeField] private DrawType _drawType;
 
-        private int _currentIndex;
+        public int _currentIndex;
         private int _typeCount;
 
         private ColorWallCreater _colorWallCreater;
