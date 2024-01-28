@@ -20,4 +20,8 @@ public class MoveToScence : MonoBehaviour
     {
         SceneManager.LoadScene(1);
     }
+    public void ChangeHowToPlay()
+    {
+        SceneManager.LoadScene(2);
+    }
 }
