@@ -5,7 +5,7 @@ using UnityEngine.Tilemaps;
 
 public class ColorWallCreater : MonoBehaviour
 {
-    [SerializeField] Tilemap previewMap, defaultMap, bedrockMap;
+    public Tilemap previewMap, defaultMap, bedrockMap;
     [SerializeField] MouseInputManager mouseInput;
 
     TileBase tileBase;
@@ -121,6 +121,23 @@ public class ColorWallCreater : MonoBehaviour
         DrawItem();
     }
 
+    public int ClearItem(Vector3Int deathPos, int radius)
+    {
+        int clearAmount = 0;
+        foreach (Vector2Int point in PointsInCircle((Vector2Int)deathPos, radius, 1))
+        {
+            if (bedrockMap.GetTile((Vector3Int)point) == null || bedrockMap.GetTile((Vector3Int)point).name != "Bedrock") 
+            {
+                if (defaultMap.GetTile((Vector3Int)point) != null)
+                {
+                    clearAmount++; 
+                    defaultMap.SetTile((Vector3Int)point, null);
+                }
+            }
+        }
+        return clearAmount;
+    }
+
     private void DrawItem()
     {
         foreach (Vector2Int point in PointsInCircle((Vector2Int)currentGridPos, currentThickness, 1))
@@ -188,7 +205,7 @@ public class ColorWallCreater : MonoBehaviour
                 return;
 
             currentAltCount++;
-            Debug.Log(currentAltCount);
+            //Debug.Log(currentAltCount);
             if (currentAltCount > 3225)
             {
                 doCastAlt = true;
