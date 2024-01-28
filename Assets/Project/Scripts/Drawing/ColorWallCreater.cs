@@ -77,7 +77,7 @@ public class ColorWallCreater : MonoBehaviour
 
     private void OnLeftClick()
     {
-        if (selectedWall != null && !mouseInput.IsPointerOverUI())
+        if (selectedWall != null /*&& !mouseInput.IsPointerOverUI()*/)
         {
             HandleDrawing();
         }
