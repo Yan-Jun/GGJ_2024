@@ -28,6 +28,6 @@ public class PlayerStat : SingletonBehaviour<PlayerStat>
 
     public void AddHealthPoint(int point)
     {
-        Health = Mathf.Clamp(Health + point, 0, 5);
+        Health = Mathf.Clamp(Health + point, 0, 100);
     }
 }

@@ -120,7 +120,8 @@ public class ColorWallCreater : MonoBehaviour
         
         DrawItem();
 
-        AudioManger.i.Play("Draw", false);
+        if (!AudioManger.i.audio.isPlaying)
+            AudioManger.i.Play("Draw", false);
     }
 
     public int ClearItem(Vector3Int deathPos, int radius)
@@ -220,7 +221,7 @@ public class ColorWallCreater : MonoBehaviour
         {
             //clear enemy and heal 1 hp
             EnemyManager.i.ClearAllEnemy();
-            PlayerStat.i.AddHealthPoint(1);
+            PlayerStat.i.AddHealthPoint(100);
 
             for (int x = 171; x > -172; x--)
             {

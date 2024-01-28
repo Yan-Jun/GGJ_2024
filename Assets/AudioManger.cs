@@ -6,7 +6,7 @@ using GGJ.Ingame.Common;
 
 public class AudioManger : SingletonBehaviour<AudioManger>
 {
-    AudioSource audio;
+    public AudioSource audio;
     public AudioClip GroundEnemyFootsteps;
     public AudioClip FlyingEnemyFootsteps;
     public AudioClip DestroyDefense;

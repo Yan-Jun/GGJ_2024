@@ -156,7 +156,7 @@ MonoBehaviour:
   Andras: {fileID: 0}
   Paimon: {fileID: 0}
   AggroRadius: 50
-  Speed: 16
+  Speed: 25
   ExplodeRadius: 20
   Health: 60
   MaxHealth: 60
