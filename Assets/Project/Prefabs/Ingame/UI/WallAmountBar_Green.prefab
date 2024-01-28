@@ -65,7 +65,6 @@ MonoBehaviour:
     - {fileID: 2163890098843557339}
     - {fileID: 1350630579880115383}
     - {fileID: 8948925481866917828}
-  testAmount: 0
 --- !u!1 &1055352549064458616
 GameObject:
   m_ObjectHideFlags: 0
@@ -200,7 +199,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 3
-  m_Spacing: -15
+  m_Spacing: -30
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 0
