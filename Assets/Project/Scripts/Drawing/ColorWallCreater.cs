@@ -115,7 +115,7 @@ public class ColorWallCreater : MonoBehaviour
     private void HandleDrawing()
     {
         int pointCount = PointsInCircle((Vector2Int)currentGridPos, currentThickness, 1).Count;
-        if (pointCount > PlayerStat.instance.GetWallPoint(tileBase.name))
+        if (pointCount > PlayerStat.i.GetWallPoint(tileBase.name))
             return;
         
         DrawItem();

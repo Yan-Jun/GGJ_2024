@@ -71,7 +71,7 @@ namespace GGJ.Ingame.Controller
                 if (isCompleted)
                 {
                     CompleteCode().Forget();
-                    PlayerStat.instance.AddWallPoint("Wall_1", 1000);
+                    PlayerStat.i.AddWallPoint("Wall_1", 1000);
                     _audioSource.PlayOneShot(_audioSetting.CompleteClip);
                     return;
                 }

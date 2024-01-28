@@ -15,7 +15,7 @@ public class ColorPointMeter : MonoBehaviour
 
     private void Awake()
     {
-        stat = PlayerStat.instance;
+        stat = PlayerStat.i;
     }
 
     private void Update()

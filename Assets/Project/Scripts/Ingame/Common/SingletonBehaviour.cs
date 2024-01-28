@@ -4,18 +4,18 @@ namespace GGJ.Ingame.Common
 {
     public class SingletonBehaviour<T> : MonoBehaviour where T : SingletonBehaviour<T>
     {
-        public static T instance { get; protected set; }
+        public static T i { get; protected set; }
 
         void Awake()
         {
-            if (instance != null && instance != this)
+            if (i != null && i != this)
             {
                 Destroy(this);
                 Debug.LogWarning("An instance of this singleton already exists.");
             }
             else
             {
-                instance = (T)this;
+                i = (T)this;
             }
         }
     }
