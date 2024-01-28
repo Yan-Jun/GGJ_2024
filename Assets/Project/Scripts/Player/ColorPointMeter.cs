@@ -12,7 +12,7 @@ public class ColorPointMeter : MonoBehaviour
 
     private void Awake()
     {
-        stat = PlayerStat.i;
+        stat = PlayerStat.instance;
     }
 
     private void Update()

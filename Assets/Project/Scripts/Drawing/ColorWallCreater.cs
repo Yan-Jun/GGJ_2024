@@ -113,7 +113,7 @@ public class ColorWallCreater : MonoBehaviour
     private void HandleDrawing()
     {
         int pointCount = PointsInCircle((Vector2Int)currentGridPos, currentThickness, 1).Count;
-        if (pointCount > PlayerStat.i.GetWallPoint(tileBase.name))
+        if (pointCount > PlayerStat.instance.GetWallPoint(tileBase.name))
             return;
         
         DrawItem();
@@ -125,7 +125,7 @@ public class ColorWallCreater : MonoBehaviour
         {
             if (CheckCanOverrideTile(bedrockMap, (Vector3Int)point) && !CheckAlreadyPaintedTile(defaultMap, (Vector3Int)point, tileBase.name)) 
             {
-                PlayerStat.i.AddWallPoint(tileBase.name, -1);
+                PlayerStat.instance.AddWallPoint(tileBase.name, -1);
                 defaultMap.SetTile((Vector3Int)point, tileBase);
 
                 CheckAddAltCount((Vector3Int)point);
