@@ -25,4 +25,9 @@ public class PlayerStat : SingletonBehaviour<PlayerStat>
         if (name == "Wall_1")
             Wall_1_Point = Mathf.Clamp(Wall_1_Point + amount, 0, 5000);
     }
+
+    public void AddHealthPoint(int point)
+    {
+        Health = Mathf.Clamp(Health + point, 0, 5);
+    }
 }

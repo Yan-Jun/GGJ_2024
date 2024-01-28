@@ -62,7 +62,11 @@ public class FlyEnemy : MonoBehaviour
     {
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, colli2D.radius, AndrasLayerMask | PaimonLayerMask);
         if (colliders.Length > 0)
+        {
+            PlayerStat.i.AddHealthPoint(-1);
             OnDeath();
+        }
+
     }
 
     private void CheckWallTriggerEnter()
@@ -83,7 +87,7 @@ public class FlyEnemy : MonoBehaviour
         Vector3Int gridPos = ColorWallCreater.i.previewMap.WorldToCell(transform.position);
         Health = Mathf.Clamp(Health - ColorWallCreater.i.ClearItem(gridPos, (int)colli2D.radius), 0, MaxHealth);
         float value = (float)((float)Health / (float)MaxHealth);
-        Debug.Log(value);
+       
         spriteRenderer.color = new Color(1, value, value, 1);
     }
 
